@@ -1,6 +1,7 @@
 <?php 
 
 namespace GeoHelper;
+use Support\Bounds, Support\LatLong, Support\Location;
 
 
 /**
