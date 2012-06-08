@@ -1,6 +1,7 @@
 # GeoHelper
 
-PHP 5 library to aid in development of map-based applications.  Based on Ruby's [Geokit](http://geokit.rubyforge.org/).
+PHP 5 library to aid in development of map-based applications.  Original library nased on Ruby's [Geokit](http://geokit.rubyforge.org/).
+Converted to PHP 5.3 namespacing by Jarvis Badgley (chiper at chipersoft dot com)
 
 ## What can it do?
 
@@ -14,22 +15,19 @@ Just about anything Geokit can do, minus the Rails specific helpers:
 
 Geocode an address:
 
-    include_once 'geo_helper/init.php';
-    $api = new GeoHelperMultiGeocoder();
-    $rc = $api->geocode('100 Spear st, San Francisco, CA');
-    echo $rc->ll()  // ll=latitude,longitude
+    $api = new GeoHelper\MultiCoder();
+    $work = $api->geocode('100 Spear st, San Francisco, CA');
+    echo $work->ll()  // ll=latitude,longitude
 
 Find the address near a latitude/longitude (reverse geocoding):
 
-    include_once 'geo_helper/init.php';
-    $api = new GeoHelperGoogleGeocoder();
-    $rc = $api->reverseGeocode(array('37.792821', '-122.393992'));
-    echo $rc->fullAddress()
+    $api = new GeoHelper\Google();
+    $home = $api->reverseGeocode(array('37.792821', '-122.393992'));
+    echo $home->fullAddress()
     >> 36-98 Mission St, San Francisco, CA 94105, USA
 
 Find distances, headings, endpoints, and midpoints:
 
-    include_once 'geo_helper/init.php';
     $distance = $home->distanceFrom($work, array('units' => 'miles'));
     $heading = $home->headingTo($work); // result is in degrees, 0 is north
     $endpoint = $home->endpoint(90, 2); // two miles due east
@@ -37,14 +35,12 @@ Find distances, headings, endpoints, and midpoints:
 
 Test if a point is contained within bounds:
 
-    include_once 'geo_helper/init.php';
-    $bounds = new GeoHelperBounds($sw_point, $ne_point);
+    $bounds = new GeoHelper\Support\Bounds($sw_point, $ne_point);
     $bounds->contains($home);
 
 Find distance to a second location with on-the-fly geocoding:
 
-    include_once 'geo_helper/init.php';
-    $api = new GeoHelperMultiGeocoder();
+    $api = new GeoHelper\MultiCoder();
     $location = $api->geocode('100 Spear St, San Francisco, CA');
     $distance = $location->distanceFrom('555 Battery St, San Francisco, CA');
    
@@ -53,18 +49,18 @@ Find distance to a second location with on-the-fly geocoding:
 
 To set the API keys for providers that require them:
 
-    GeoHelperGeocoderUsGeocoder::$key = "username:password";
-    GeoHelperYahooGeocoder::$key = "your_key";  // Yahoo v1
-    GeoHelperPlaceFinderGeocoder::$key = "your_key";  // Yahoo v2
-    GeoHelperBingGeocoder::$key = "your_key";
+    GeoHelper\GeocoderUS::$key = "username:password";
+    GeoHelper\Yahoo::$key = "your_key";  // Yahoo v1
+    GeoHelper\PlaceFinder::$key = "your_key";  // Yahoo v2
+    GeoHelper\Bing::$key = "your_key";
    
-To set the order of providers when using the `GeoHelperMultiGeocoder`:
+To set the order of providers when using the `MultiCoder`:
 
     // valid keys are: GeocoderUs, Yahoo, PlaceFinder, Bing, Google 
-    GeoHelper::$provider_order = array('Google', 'PlaceFinder');
+    GeoHelper\MultiCoder::$provider_order = array('Google', 'PlaceFinder');
    
     // valid keys are: GeoPlugin, HostIp
-    GeoHelper::$ip_provider_order = array('GeoPlugin', 'HostIp');
+    GeoHelper\MultiCoder::$ip_provider_order = array('GeoPlugin', 'HostIp');
 
 
 ## Running the tests
