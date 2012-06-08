@@ -9,6 +9,18 @@
  */
 
 // include libraries
-include_once 'lib/geo_helper.php';
-include_once 'lib/mappable.php';
-include_once 'lib/geocoders.php';
+
+class GeoHelperAutoloader {
+   public function __construct() {
+      spl_autoload_register(array($this, 'loader'));
+   }
+   private function loader($className) {
+      //only process our classes
+      if (array_shift(explode('\\', $className)) !== 'GeoHelper') return;
+      
+      $file = __DIR__.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, ltrim($className, '\\')).".php";
+      include_once $file;
+   }
+}
+
+new GeoHelperAutoloader();
