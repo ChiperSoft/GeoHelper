@@ -120,7 +120,7 @@ class LatLong extends Mappable
     */
    public function reverseGeocode($options = array())
    {
-      $api = new GeoHelperMultiGeocoder();
+      $api = new MultiCoder();
             
       $rc = $api->reverseGeocode($this, $options);
       if ($rc->success()) {

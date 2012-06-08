@@ -186,7 +186,7 @@ class Mappable
     */
    public static function geocode($location, $options = array())
    {
-      $api = new GeoHelperMultiGeocoder();
+      $api = new MultiCoder();
             
       $rc = $api->geocode($location, $options);
       if ($rc->success()) {
