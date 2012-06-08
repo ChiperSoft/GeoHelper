@@ -18,17 +18,6 @@ class AbstractGeocoder
 {
 	
    /**
-    * Default calculation units (can be miles, kms or nms)
-    * @var string
-    */
-   public static $default_units = 'miles';
-
-   /**
-    * Default calculation formula (can be sphere or flat)
-    * @var string
-    */
-   public static $default_formula = 'sphere';
-
    /**
     * Multigeocoder provider order
     * @var array

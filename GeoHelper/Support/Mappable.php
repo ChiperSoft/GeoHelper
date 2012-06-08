@@ -36,6 +36,20 @@ define('GEOHELPER_LATITUDE_DEGREES', GEOHELPER_EARTH_RADIUS_IN_MILES / GEOHELPER
  */
 class Mappable
 {
+   
+   /**
+    * Default calculation formula (can be sphere or flat)
+    * @var string
+    */
+   public static $default_formula = 'sphere';
+   
+   /**
+    * Default calculation units (can be miles, kms or nms)
+    * @var string
+    */
+   public static $default_units = 'miles';
+   
+   
    /**
     * Finds the distance between two points
     *
@@ -59,8 +73,8 @@ class Mappable
          return 0.0;
       }
       
-      $units = isset($options['units']) ? $options['units'] : GeoHelper::$default_units;
-      $formula = isset($options['formula']) ? $options['formula'] : GeoHelper::$default_formula;
+      $units = isset($options['units']) ? $options['units'] : static::$default_units;
+      $formula = isset($options['formula']) ? $options['formula'] : static::$default_formula;
       
       if ($formula == 'sphere')
       {
@@ -115,7 +129,7 @@ class Mappable
     */
    public static function endpointFor($start, $heading, $distance, $options = array())
    {
-      $units = isset($options['units']) ? $options['units'] : GeoHelper::$default_units;
+      $units = isset($options['units']) ? $options['units'] : static::$default_units;
       if ($units == 'kms') {
          $radius = GEOHELPER_EARTH_RADIUS_IN_KMS;
       } elseif ($units == 'nms') {
@@ -155,7 +169,7 @@ class Mappable
    {
       $from = LatLong::normalize($from);
       
-      $units = isset($options['units']) ? $options['units'] : GeoHelper::$default_units;
+      $units = isset($options['units']) ? $options['units'] : static::$default_units;
       
       $heading = $from->headingTo($to);
       $distance = $from->distanceTo($to, $options);
