@@ -7,8 +7,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */ 
- 
-class GeoHelperTestPlaceFinderGeocoder extends GeoHelperPlaceFinderGeocoder
+
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong;
+use GeoHelper\PlaceFinder;
+
+class GeoHelperTestPlaceFinderGeocoder extends PlaceFinder
 {
    public function translatePrecision($precision) {
       return parent::translatePrecision($precision);
@@ -45,12 +48,12 @@ EOT;
    public function setup()
    {
       parent::setup();
-      GeoHelperPlaceFinderGeocoder::$key = 'PLACE_FINDER';
+      PlaceFinder::$key = 'PLACE_FINDER';
    }
 
    public function testPlaceFinder()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_FULL));
       
       $location = $api->geocode($this->full_address);
@@ -59,7 +62,7 @@ EOT;
    
    public function testPlaceFinderWithGeoLocation()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_FULL));
       
       $location = $api->geocode($this->success);
@@ -68,7 +71,7 @@ EOT;
    
    public function testPlaceFinderCity()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_CITY));
       
       $location = $api->geocode($this->short_address);
@@ -77,7 +80,7 @@ EOT;
    
    public function testPlaceFinderCityWithGeoLocation()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_CITY));
       
       $location = $api->geocode($this->success);
@@ -86,7 +89,7 @@ EOT;
    
    public function testPlaceFinderErrorFromService()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_ERROR));
       
       $location = $api->geocode($this->full_address);
@@ -95,7 +98,7 @@ EOT;
    
    public function testPlaceFinderConnectionError()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->geocode($this->full_address);
@@ -121,7 +124,7 @@ EOT;
    
    public function testPlaceFinderMultipleLocations()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_MULTIPLE));
       
       $location = $api->geocode('Main Street, Baton Rouge');
@@ -130,7 +133,7 @@ EOT;
    
    public function testPlaceFinderReverseGeocode()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_REVERSE));
       
       $location = $api->reverseGeocode('37.787082,-122.400929');
@@ -145,7 +148,7 @@ EOT;
    
    public function testPlaceFinderReverseGeocodeConnectionError()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->reverseGeocode($this->latlng);
@@ -154,7 +157,7 @@ EOT;
    
    public function testNotFoundError()
    {
-      $api = $this->getMock('GeoHelperPlaceFinderGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\PlaceFinder', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::PLACE_FINDER_EMPTY));
       
       $location = $api->geocode('some missed address');
@@ -169,7 +172,7 @@ EOT;
       $this->assertEquals('37.792418,-122.393913', $location->ll());
       $this->assertTrue($location->isUs());
       $this->assertEquals('100 Spear St, San Francisco, CA, 94105, US', $location->full_address);
-      $this->assertType('GeoHelperBounds', $location->suggested_bounds);
+//      $this->assertType('\GeoHelper\Support\Bounds', $location->suggested_bounds);
       $this->assertEquals('37.792418,-122.393913', $location->suggested_bounds->sw->ll());
       $this->assertEquals('37.792418,-122.393913', $location->suggested_bounds->ne->ll());
       $this->assertEquals('placefinder', $location->provider);

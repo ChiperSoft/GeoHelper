@@ -7,8 +7,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+use GeoHelper\AbstractGeocoder;
+use GeoHelper\Support\Location;
  
-class GeoHelperTestGeocoder extends GeoHelperGeocoder
+class GeoHelperTestGeocoder extends AbstractGeocoder
 {
    public function callWebService($url) {}
    public function buildFullAddress($result) {
@@ -27,7 +29,7 @@ class BaseGeocoderTest extends BaseGeoCoderTestCase
    public function testTimeoutCallWebService()
    {
       $url = 'http://www.anything.com';
-      GeoHelperGeocoder::$request_timeout = 1;
+      AbstractGeocoder::$request_timeout = 1;
       $geocoder = new GeoHelperTestGeocoder();
       
       $this->assertNull($geocoder->callWebService($url));
@@ -45,13 +47,13 @@ class BaseGeocoderTest extends BaseGeoCoderTestCase
    public function testNoGeocodeMethod()
    {
       $geocoder = new GeoHelperTestGeocoder();
-      $this->assertEquals(new GeoHelperLocation(), $geocoder->geocode($this->full_address));
+      $this->assertEquals(new Location(), $geocoder->geocode($this->full_address));
    }
    
    public function testNoReverseGeocodeMethod()
    {
       $geocoder = new GeoHelperTestGeocoder();
-      $this->assertEquals(new GeoHelperLocation(), $geocoder->reverseGeocode($this->latlng));
+      $this->assertEquals(new Location(), $geocoder->reverseGeocode($this->latlng));
    }
    
    public function testBuildFullAddress()

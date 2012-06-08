@@ -7,17 +7,18 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong;
 
 class LocationTest extends PHPUnit_Framework_TestCase
 {
    public function setup()
    {
-      $this->location = new GeoHelperLocation();
+      $this->location = new Location();
    }
    
    public function testConstructorParameters()
    {
-      $location = new GeoHelperLocation(array('city' => 'San Francisco', 'state' => 'CA', 'country_code' => 'US', 'zip' => '94105'));
+      $location = new Location(array('city' => 'San Francisco', 'state' => 'CA', 'country_code' => 'US', 'zip' => '94105'));
       $this->assertEquals('San Francisco, CA, 94105, US', $location->fullAddress());
    }
    

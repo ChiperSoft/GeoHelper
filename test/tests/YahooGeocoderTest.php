@@ -7,7 +7,9 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
- 
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong, GeoHelper\Support\Bounds;
+use GeoHelper\Yahoo;
+
 class YahooGeocoderTest extends BaseGeoCoderTestCase
 {
    const YAHOO_FULL = <<<EOT
@@ -25,12 +27,12 @@ EOT;
    public function setup()
    {
       parent::setup();
-      GeoHelperYahooGeocoder::$key = 'YAHOO';
+      Yahoo::$key = 'YAHOO';
    }
 
    public function testYahoo()
    {
-      $api = $this->getMock('GeoHelperYahooGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Yahoo', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::YAHOO_FULL));
       
       $location = $api->geocode($this->full_address);
@@ -40,7 +42,7 @@ EOT;
    
    public function testYahooWithGeoLocation()
    {
-      $api = $this->getMock('GeoHelperYahooGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Yahoo', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::YAHOO_FULL));
       
       $location = $api->geocode($this->success);
@@ -50,7 +52,7 @@ EOT;
    
    public function testYahooCity()
    {
-      $api = $this->getMock('GeoHelperYahooGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Yahoo', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::YAHOO_CITY));
       
       $location = $api->geocode($this->full_address);
@@ -60,17 +62,17 @@ EOT;
    
    public function testYahooCityWithGeoLocation()
    {
-      $api = $this->getMock('GeoHelperYahooGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Yahoo', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::YAHOO_CITY));
       
-      $location = $api->geocode(new GeoHelperLocation(array('city' => 'San Francisco', 'state' => 'CA', 'country_code' => 'US')));
+      $location = $api->geocode(new Location(array('city' => 'San Francisco', 'state' => 'CA', 'country_code' => 'US')));
       $this->assertCityAddress($location);
       $this->assertEquals(5, $location->precision);
    }
    
    public function testYahooErrorFromService()
    {
-      $api = $this->getMock('GeoHelperYahooGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Yahoo', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::YAHOO_ERROR));
       
       $location = $api->geocode($this->full_address);
@@ -79,7 +81,7 @@ EOT;
    
    public function testYahooConnectionError()
    {
-      $api = $this->getMock('GeoHelperYahooGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Yahoo', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->geocode($this->full_address);

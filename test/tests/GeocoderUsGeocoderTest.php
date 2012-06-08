@@ -7,7 +7,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */ 
- 
+
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong;
+use GeoHelper\GeocoderUS;
+
 class GeocoderUsGeocoderTest extends BaseGeocoderTestCase
 {
    const GEOCODER_US_FULL = <<<EOT
@@ -26,15 +29,15 @@ EOT;
    public function setup()
    {
       parent::setup();
-      GeoHelperGeocoderUsGeocoder::$key = 'GEOCODER:US';
+      GeocoderUS::$key = 'GEOCODER:US';
    }
 
    public function testGeocoderUsWithoutKey()
    {
-      $api = $this->getMock('GeoHelperGeocoderUsGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeocoderUS', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEOCODER_US_FULL));
       
-      GeoHelperGeocoderUsGeocoder::$key = null;
+      GeocoderUS::$key = null;
       $location = $api->geocode($this->full_address);
       $this->assertEquals(1, count($location->all));
       $this->assertLocation($location);
@@ -42,7 +45,7 @@ EOT;
 
    public function testGeocoderUs()
    {
-      $api = $this->getMock('GeoHelperGeocoderUsGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeocoderUS', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEOCODER_US_FULL));
       
       $location = $api->geocode($this->full_address);
@@ -52,7 +55,7 @@ EOT;
    
    public function testGeocoderUsWithGeoLocation()
    {
-      $api = $this->getMock('GeoHelperGeocoderUsGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeocoderUS', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEOCODER_US_FULL));
       
       $location = $api->geocode($this->success);
@@ -62,7 +65,7 @@ EOT;
    
    public function testGeocoderUsMultipleLocations()
    {
-      $api = $this->getMock('GeoHelperGeocoderUsGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeocoderUS', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEOCODER_UR_MULTIPLE_LOCATIONS));
       
       $location = $api->geocode($this->full_address);
@@ -71,7 +74,7 @@ EOT;
    
    public function testGeocoderUsErrorFromService()
    {
-      $api = $this->getMock('GeoHelperGeocoderUsGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeocoderUS', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEOCODER_US_ERROR));
       
       $location = $api->geocode($this->full_address);
@@ -80,7 +83,7 @@ EOT;
    
    public function testGeocoderUsConnectionError()
    {
-      $api = $this->getMock('GeoHelperGeocoderUsGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeocoderUS', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->geocode($this->full_address);

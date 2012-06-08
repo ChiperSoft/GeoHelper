@@ -8,6 +8,9 @@
  * with this source code in the file LICENSE.
  */ 
  
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong;
+use GeoHelper\Bing;
+ 
 class BingGeocoderTest extends BaseGeocoderTestCase
 {
    const BING_SUCCESS = <<<EOT
@@ -33,12 +36,12 @@ EOT;
    public function setup()
    {
       parent::setup();
-      GeoHelperBingGeocoder::$key = 'BING';
+      Bing::$key = 'BING';
    }
    
    public function testBing()
    {
-      $api = $this->getMock('GeoHelperBingGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Bing', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::BING_SUCCESS));
       
       $location = $api->geocode($this->full_address);
@@ -47,7 +50,7 @@ EOT;
    
    public function testBingWithGeoLocation()
    {
-      $api = $this->getMock('GeoHelperBingGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Bing', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::BING_SUCCESS));
       
       $location = $api->geocode($this->success);
@@ -56,7 +59,7 @@ EOT;
    
    public function testBingMultipleLocations()
    {
-      $api = $this->getMock('GeoHelperBingGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Bing', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::BING_MULTIPLE));
       
       $location = $api->geocode('Main Street, Baton Rouge');
@@ -65,7 +68,7 @@ EOT;
    
    public function testBingErrorFromService()
    {
-      $api = $this->getMock('GeoHelperBingGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Bing', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::BING_ERROR));
       
       $location = $api->geocode($this->full_address);
@@ -74,7 +77,7 @@ EOT;
    
    public function testBingConnectionError()
    {
-      $api = $this->getMock('GeoHelperBingGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Bing', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->geocode($this->full_address);
@@ -83,7 +86,7 @@ EOT;
    
    public function testBingReverseGeocode()
    {
-      $api = $this->getMock('GeoHelperBingGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Bing', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::BING_REVERSE));
       
       $location = $api->reverseGeocode($this->latlng);
@@ -97,7 +100,7 @@ EOT;
    
    public function testBingReverseGeocodeConnectionError()
    {
-      $api = $this->getMock('GeoHelperBingGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Bing', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->reverseGeocode($this->latlng);
@@ -110,7 +113,7 @@ EOT;
       $this->assertEquals('San Francisco', $location->city);
       $this->assertEquals('37.792156,-122.394012', $location->ll());
       $this->assertEquals('100 Spear St, San Francisco, CA 94105-1522', $location->full_address);
-      $this->assertType('GeoHelperBounds', $location->suggested_bounds);
+//      $this->assertType('\GeoHelper\Support\Bounds', $location->suggested_bounds);
       $this->assertEquals('37.796018717571,-122.38749495714', $location->suggested_bounds->sw->ll());
       $this->assertEquals('37.788293282429,-122.40052904286', $location->suggested_bounds->ne->ll());
       $this->assertEquals('bing', $location->provider);

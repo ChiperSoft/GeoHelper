@@ -7,7 +7,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */ 
- 
+
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong;
+use GeoHelper\GeoPlugin;
+
 class GeoPluginGeocoderTest extends BaseGeocoderTestCase
 {
    const GEO_PLUGIN_SUCCESS = <<<EOT
@@ -67,7 +70,7 @@ EOT;
    
    public function testGeoPlugin()
    {
-      $api = $this->getMock('GeoHelperGeoPluginGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeoPlugin', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEO_PLUGIN_SUCCESS));
       
       $location = $api->geocode($this->ip);
@@ -76,7 +79,7 @@ EOT;
    
    public function testGeoPluginReverseGeocode()
    {
-      $api = $this->getMock('GeoHelperGeoPluginGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeoPlugin', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEO_PLUGIN_REVERSE_SUCCESS));
       
       $location = $api->reverseGeocode('37.4192008972,-122.057403564');
@@ -85,7 +88,7 @@ EOT;
    
    public function testGeoPluginErrorFromService()
    {
-      $api = $this->getMock('GeoHelperGeoPluginGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeoPlugin', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEO_PLUGIN_ERROR));
       
       $location = $api->geocode($this->ip);
@@ -94,7 +97,7 @@ EOT;
    
    public function testGeoPluginReverseGeocodeErrorFromService()
    {
-      $api = $this->getMock('GeoHelperGeoPluginGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeoPlugin', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GEO_PLUGIN_ERROR));
       
       $location = $api->reverseGeocode('37.4192008972,-122.057403564');
@@ -103,7 +106,7 @@ EOT;
    
    public function testGeoPluginConnectionError()
    {
-      $api = $this->getMock('GeoHelperGeoPluginGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeoPlugin', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->geocode($this->ip);
@@ -112,7 +115,7 @@ EOT;
 
    public function testGeoPluginReverseGeocodeConnectionError()
    {
-      $api = $this->getMock('GeoHelperGeoPluginGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\GeoPlugin', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->reverseGeocode('37.4192008972,-122.057403564');
@@ -121,7 +124,7 @@ EOT;
    
    public function testGeoPluginInvalidIp()
    {
-      $api = new GeoHelperGeoPluginGeocoder();
+      $api = new GeoPlugin();
       
       $location = $api->geocode('this is not an ip');
       $this->assertFalse($location->success());

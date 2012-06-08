@@ -7,7 +7,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */ 
- 
+
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong;
+use GeoHelper\HostIP;
+
 class HostIpGeocoderTest extends BaseGeocoderTestCase
 {
    const HOST_IP_SUCCESS = <<<EOT
@@ -60,7 +63,7 @@ EOT;
    
    public function testHostIp()
    {
-      $api = $this->getMock('GeoHelperHostIpGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\HostIP', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::HOST_IP_SUCCESS));
       
       $location = $api->geocode($this->ip);
@@ -76,7 +79,7 @@ EOT;
    
    public function testHostIpErrorFromService()
    {
-      $api = $this->getMock('GeoHelperHostIpGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\HostIP', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::HOST_IP_FAILURE));
       
       $location = $api->geocode($this->ip);
@@ -85,7 +88,7 @@ EOT;
    
    public function testHostIpConnectionError()
    {
-      $api = $this->getMock('GeoHelperHostIpGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\HostIP', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->geocode($this->ip);
@@ -94,7 +97,7 @@ EOT;
    
    public function testHostIpInvalidIp()
    {
-      $api = new GeoHelperHostIpGeocoder();
+      $api = new HostIP();
       
       $location = $api->geocode('this is not an ip');
       $this->assertFalse($location->success());

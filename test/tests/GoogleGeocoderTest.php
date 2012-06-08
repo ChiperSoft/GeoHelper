@@ -7,7 +7,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */ 
- 
+
+use GeoHelper\Support\Location, GeoHelper\Support\LatLong, GeoHelper\Support\Bounds;
+use GeoHelper\Google;
+
 class GoogleGeocoderTest extends BaseGeocoderTestCase
 {
    const GOOGLE_SUCCESS = <<<EOT
@@ -43,7 +46,7 @@ EOT;
 
    public function testGoogle()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GOOGLE_SUCCESS));
       
       $location = $api->geocode($this->full_address);
@@ -52,7 +55,7 @@ EOT;
    
    public function testGoogleWithGeoLocation()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GOOGLE_SUCCESS));
       
       $location = $api->geocode($this->success);
@@ -61,7 +64,7 @@ EOT;
    
    public function testGoogleMultipleLocations()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GOOGLE_MULTIPLE));
       
       $location = $api->geocode('Summer Breeze Dr.');
@@ -70,11 +73,11 @@ EOT;
    
    public function testGoogleWithBounds()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GOOGLE_WITH_BOUNDS));
       
       $location = $api->geocode('Winnetka', array(
-         'bounds' => GeoHelperBounds::normalize(array(34.172684,-118.604794), array(34.236144,-118.500938)),
+         'bounds' => Bounds::normalize(array(34.172684,-118.604794), array(34.236144,-118.500938)),
       ));
       
       $this->assertEquals('CA', $location->state);
@@ -83,7 +86,7 @@ EOT;
    
    public function testGoogleErrorFromService()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GOOGLE_ERROR));
       
       $location = $api->geocode($this->full_address);
@@ -92,7 +95,7 @@ EOT;
    
    public function testGoogleConnectionError()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->geocode($this->full_address);
@@ -101,7 +104,7 @@ EOT;
    
    public function testGoogleTooManyQueriesError()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GOOGLE_THROTTLE));
       
       $this->setExpectedException('TooManyQueriesGeoHelperException');
@@ -110,7 +113,7 @@ EOT;
    
    public function testGoogleReverseGeocode()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->returnValue(self::GOOGLE_REVERSE));
       
       $location = $api->reverseGeocode($this->latlng);
@@ -124,7 +127,7 @@ EOT;
    
    public function testGoogleReverseGeocodeConnectionError()
    {
-      $api = $this->getMock('GeoHelperGoogleGeocoder', array('callWebService'));
+      $api = $this->getMock('GeoHelper\\Google', array('callWebService'));
       $api->expects($this->once())->method('callWebService')->will($this->throwException(new Exception));
       
       $location = $api->reverseGeocode($this->latlng);
@@ -137,7 +140,7 @@ EOT;
       $this->assertEquals('San Francisco', $location->city);
       $this->assertEquals('37.7921509,-122.3940000', $location->ll());
       $this->assertEquals('100 Spear St, San Francisco, CA 94105, USA', $location->full_address);
-      $this->assertType('GeoHelperBounds', $location->suggested_bounds);
+//      $this->assertType('\GeoHelper\Support\Bounds', $location->suggested_bounds);
       $this->assertEquals('37.7890033,-122.3971476', $location->suggested_bounds->sw->ll());
       $this->assertEquals('37.7952985,-122.3908524', $location->suggested_bounds->ne->ll());
       $this->assertEquals('google', $location->provider);
