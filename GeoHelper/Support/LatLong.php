@@ -9,7 +9,7 @@
  */
 
 namespace GeoHelper\Support;
-
+use \GeoHelper\MultiCoder;
 
 /**
  * LatLong class

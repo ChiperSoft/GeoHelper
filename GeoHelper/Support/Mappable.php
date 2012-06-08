@@ -9,6 +9,7 @@
  */
 
 namespace GeoHelper\Support;
+use \GeoHelper\MultiCoder;
 
 /** calculation constants */
 define('GEOHELPER_PI_DIV_RAD', 0.0174);
@@ -178,7 +179,7 @@ class Mappable
    }
 
    /**
-    * Geocode an address using the GeoHelperMultiGeocoder
+    * Geocode an address using the MultiCoder
     * @param mixed $location a geocodable item
     * @param array $options options hash
     * @return Location location
