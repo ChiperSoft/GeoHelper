@@ -18,19 +18,6 @@ class AbstractGeocoder
 {
 	
    /**
-   /**
-    * Multigeocoder provider order
-    * @var array
-    */
-   public static $provider_order = array('Google', 'PlaceFinder');
-
-   /**
-    * Multigeocoder ip provider order
-    * @var array
-    */
-   public static $ip_provider_order = array('GeoPlugin', 'HostIp');
-   
-   /**
     * Request timeout
     * @var integer
     */
