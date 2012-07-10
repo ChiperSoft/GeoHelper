@@ -37,6 +37,7 @@ class MultiCoder extends AbstractGeocoder
       $order = $is_ip_geocoding ? static::$ip_provider_order : static::$provider_order;
       
       foreach ($order as $provider) {
+         $provider = "\\GeoHelper\\$provider";
          try {
             $api = new $provider();
             $rc = $api->geocode($address, $options);
